@@ -38,14 +38,12 @@ ADMINS = (
     ('Ben Edwards', 'ben@edwards.nz'),
 )
 
-"""
 if not IS_LOCAL:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     CSRF_TRUSTED_ORIGINS = [
         'https://kylecup.edwards.nz'
     ]
-"""
 
 ALLOWED_HOSTS = ['*']
 
