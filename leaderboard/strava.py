@@ -2,7 +2,7 @@ from stravalib import Client
 from leaderboard.models import Athlete, Month, Activity, AthleteMonthSummary
 from django.contrib.sites.models import Site
 from django.conf import settings
-from datetime import date
+from datetime import date, timedelta
 from django.conf import settings
 import calendar
 
@@ -67,9 +67,9 @@ class StravaClient():
         """
 
         month_record = Month.objects.get(slug=month_slug)
-        start_date = month_record.date.strftime('%Y-%m-%d')
+        start_date = (month_record.date - timedelta(days=1)).strftime('%Y-%m-%d')
         num_days_in_month = calendar.monthrange(month_record.date.year, month_record.date.month)
-        end_date = date(month_record.date.year, month_record.date.month, num_days_in_month[1]).strftime('%Y-%m-%d')
+        end_date = (date(month_record.date.year, month_record.date.month, num_days_in_month[1]) + timedelta(days=1)).strftime('%Y-%m-%d')
 
         # Refresh activities for each ath,ete
         for athlete in Athlete.objects.filter(strava_access_token__isnull=False):
@@ -93,7 +93,7 @@ class StravaClient():
                         # Create the new activity
                         new_activity = Activity()
                         new_activity.strava_id = activity.id 
-                        new_activity.date = activity.start_date
+                        new_activity.date = activity.start_date_local
                         new_activity.distance = activity.distance / 1000
                         new_activity.pace = activity.average_speed
                         new_activity.athlete_month_summary = athlete_month_summary
