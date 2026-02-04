@@ -93,6 +93,7 @@ class StravaClient():
                         # Create the new activity
                         new_activity = Activity()
                         new_activity.strava_id = activity.id 
+                        new_activity.date = activity.start_date_local
                         new_activity.distance = activity.distance / 100
                         new_activity.pace = activity.average_speed
                         new_activity.athlete_month_summary = athlete_month_summary
