@@ -3,8 +3,7 @@ from django.views import View
 from django.views.generic.detail import DetailView
 from . import models
 from datetime import datetime
-from stravalib import Client
-from django.contrib.sites.shortcuts import get_current_site
+from leaderboard.strava import StravaClient
 
 
 class IndexView(View):
@@ -41,13 +40,8 @@ class StravaConnectView(View):
     Initiate authorisation flow with Strava
     """
     def get(self, request, *args, **kwargs):
-        client = Client()
-        redirect_url = '%s/strava/callback' % get_current_site(request).domain
-        url = client.authorization_url(
-            client_id=self.get_strava_token_record().client_id,
-            redirect_uri=redirect_url
-        )
-        return redirect(url)
+        client = StravaClient()
+        return redirect(client.get_auth_url())
     
     def get_strava_token_record(self):
         return models.StravaToken.objects.first()
@@ -60,16 +54,8 @@ class StravaCallbackView(View):
     """
     
     def get(self, request, *args, **kwargs):
-        client = Client()
-        strava_token = self.get_strava_token_record()
-        token_response = client.exchange_code_for_token(
-            client_id=strava_token.client_id, 
-            client_secret=strava_token.client_secret, 
-            code=request.GET.get('code')
-        )
-        strava_token.access_token = token_response["access_token"]
-        strava_token.refresh_token = token_response["refresh_token"]
-        strava_token.save()
+        client = StravaClient()
+        client.auth_callback(request.GET.get('code'))
         return redirect('index')
     
     def get_strava_token_record(self):
@@ -80,7 +66,12 @@ class StravaSyncView(View):
     """
     Trigger sync to Strava for a given month
     """
-    
+
     def get(self, request, *args, **kwargs):
-        return redirect('index')
+        """
+        Sync the activity records for the given month
+        """
+        client = StravaClient()
+        client.sync_activities()
+        return redirect('month', slug=self.kwargs['month'])
     

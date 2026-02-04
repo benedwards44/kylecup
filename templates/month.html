@@ -3,10 +3,18 @@
 {% load static %}
 
 {% block content %}
-<div class="border-b border-blue-900 pb-4">
+<div class="border-b border-blue-900 pb-4 flex justify-between">
   <h1 class="text-3xl font-bold">
     {{ object.name }} Activity
   </h1>
+  <div>
+    <a 
+      href="/strava/sync/{{ object.slug}}" 
+      class="rounded bg-blue-900 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-900"
+    >
+      Sync
+    </a>
+  </div>
 </div>
 <div class="flow-root mt-5">
   {% if not activities %}
