@@ -19,6 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     ENVIRONMENT=(str, 'production'),
     DEBUG=(bool, False),
+    STRAVA_CLIENT_ID=(int, None),
+    STRAVA_CLIENT_SECRET=(str, ''),
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
@@ -164,5 +166,5 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STRAVA_CLIENT_ID = 200037
-STRAVA_CLIENT_SECRET = 'eb5b6ca82b8cfc0b23902b93d822d9d2ef999629'
+STRAVA_CLIENT_ID = env('STRAVA_CLIENT_ID')
+STRAVA_CLIENT_SECRET = env('STRAVA_CLIENT_SECRET')
