@@ -43,9 +43,6 @@ class StravaConnectView(View):
         client = StravaClient()
         return redirect(client.get_auth_url())
     
-    def get_strava_token_record(self):
-        return models.StravaToken.objects.first()
-    
 
 
 class StravaCallbackView(View):
@@ -57,9 +54,6 @@ class StravaCallbackView(View):
         client = StravaClient()
         client.auth_callback(request.GET.get('code'))
         return redirect('index')
-    
-    def get_strava_token_record(self):
-        return models.StravaToken.objects.first()
     
 
 class StravaSyncView(View):

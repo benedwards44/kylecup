@@ -8,6 +8,8 @@ class Athlete(models.Model):
     """
 
     strava_id = models.PositiveIntegerField()
+    strava_access_token = models.CharField(max_length=255, blank=True, null=True)
+    strava_refresh_token = models.CharField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=80)
     slug = models.SlugField()
 
@@ -72,14 +74,3 @@ class Activity(models.Model):
 
     def __str__(self):
         return '%s ran %skm at %s per km' % (self.athlete_month_summary.athlete.name, str(self.distance), str(self.pace))
-
-
-class StravaToken(models.Model):
-    """
-    Store the Strava API details
-    """
-
-    client_id = models.CharField(max_length=80)
-    client_secret = models.CharField(max_length=80)
-    access_token = models.CharField(max_length=255, blank=True, null=True)
-    refresh_token = models.CharField(max_length=255, blank=True, null=True)

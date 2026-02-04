@@ -20,8 +20,3 @@ class AthleteAdmin(admin.ModelAdmin):
 @admin.register(models.Activity)
 class ActivityAdmin(admin.ModelAdmin):
     list_display = ['athlete_month_summary', 'distance', 'pace']
-
-
-@admin.register(models.StravaToken)
-class StravaTokenAdmin(admin.ModelAdmin):
-    list_display = ['client_id', 'client_secret']
