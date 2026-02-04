@@ -54,7 +54,7 @@ class StravaClient():
         token_response = self.client.refresh_access_token(
             client_id=settings.STRAVA_CLIENT_ID, 
             client_secret=settings.STRAVA_CLIENT_SECRET, 
-            refresh_token=athlete.refresh_token,
+            refresh_token=athlete.strava_refresh_token,
         )
         athlete.strava_access_token = token_response["access_token"]
         athlete.strava_refresh_token = token_response["refresh_token"]
