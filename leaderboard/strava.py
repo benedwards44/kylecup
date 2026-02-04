@@ -41,7 +41,7 @@ class StravaClient():
         )
         self.client = Client(access_token=token_response["access_token"])
         strava_athlete = self.client.get_athlete()
-        athlete = Athlete.objects.get(name=strava_athlete.firstname)
+        athlete = Athlete.objects.get(strava_id=strava_athlete.id)
         athlete.access_token = token_response["access_token"]
         athlete.refresh_token = token_response["refresh_token"]
         athlete.save()

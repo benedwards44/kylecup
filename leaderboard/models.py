@@ -7,7 +7,7 @@ class Athlete(models.Model):
     Holds details about an athlete
     """
 
-    strava_id = models.PositiveIntegerField()
+    strava_id = models.PositiveIntegerField(blank=True, null=True)
     strava_access_token = models.CharField(max_length=255, blank=True, null=True)
     strava_refresh_token = models.CharField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=80)
