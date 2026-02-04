@@ -42,8 +42,8 @@ class StravaClient():
         self.client = Client(access_token=token_response["access_token"])
         strava_athlete = self.client.get_athlete()
         athlete = Athlete.objects.get(strava_id=strava_athlete.id)
-        athlete.access_token = token_response["access_token"]
-        athlete.refresh_token = token_response["refresh_token"]
+        athlete.strava_access_token = token_response["access_token"]
+        athlete.strava_refresh_token = token_response["refresh_token"]
         athlete.save()
 
 
@@ -56,8 +56,8 @@ class StravaClient():
             client_secret=settings.STRAVA_CLIENT_SECRET, 
             refresh_token=athlete.refresh_token,
         )
-        athlete.access_token = token_response["access_token"]
-        athlete.refresh_token = token_response["refresh_token"]
+        athlete.strava_access_token = token_response["access_token"]
+        athlete.strava_refresh_token = token_response["refresh_token"]
         athlete.save()
 
 
