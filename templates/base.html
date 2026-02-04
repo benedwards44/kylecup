@@ -10,10 +10,10 @@
   <body class="h-full">
     <div class="min-h-full">
       <header class="bg-blue-900 pb-24">
-        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-          <div class="relative flex items-center justify-center py-5 lg:justify-between">
+        <div class="mx-auto max-w-3xl px-4 sm:px-6 md:max-w-7xl md:px-8">
+          <div class="relative flex items-center justify-center py-8 md:justify-between md:py-5">
             <!-- Logo -->
-            <div class="absolute left-0 shrink-0 lg:static flex">
+            <div class="absolute left-0 shrink-0 md:static flex">
               <div>
                 <a href="/">
                   <img src="{% static 'images/logo.png' %}" alt="The Kyle Cup" class="h-8 w-auto" />
@@ -21,11 +21,8 @@
               </div>
               <div class="text-white text-3xl ml-3">The Kyle Cup 2026</div>
             </div>
-
-           
-
             <!-- Menu button -->
-            <div class="absolute right-0 shrink-0 lg:hidden">
+            <div class="absolute right-0 shrink-0 md:hidden">
               <!-- Mobile menu button -->
               <button command="show-modal" commandfor="mobile-menu" class="relative inline-flex items-center justify-center rounded-md bg-transparent p-2 text-indigo-200 hover:bg-white/5 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
                 <span class="absolute -inset-0.5"></span>
@@ -36,7 +33,7 @@
               </button>
             </div>
           </div>
-          <div class="hidden border-t border-white/20 py-5 lg:block">
+          <div class="hidden border-t border-white/20 py-5 md:block">
             <div class="grid grid-cols-3 items-center gap-8">
               <div class="col-span-3">
                 <nav class="flex space-x-4">
@@ -50,7 +47,7 @@
         </div>
 
         <el-dialog>
-          <dialog id="mobile-menu" class="m-0 p-0 backdrop:bg-transparent lg:hidden">
+          <dialog id="mobile-menu" class="m-0 p-0 backdrop:bg-transparent md:hidden">
             <el-dialog-backdrop class="fixed inset-0 bg-black/25 duration-150 data-[closed]:opacity-0 data-[enter]:ease-out data-[leave]:ease-in"></el-dialog-backdrop>
 
             <div tabindex="0" class="fixed inset-0 focus:outline focus:outline-0">
@@ -85,12 +82,11 @@
         </el-dialog>
       </header>
       <main class="-mt-24 pb-8">
-        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-          <h1 class="sr-only">Page title</h1>
-          <!-- Main 3 column grid -->
-          <div class="grid grid-cols-1 items-start gap-4 lg:grid-cols-3 lg:gap-8">
+        <div class="mx-auto max-w-3xl px-4 sm:px-6 md:max-w-7xl md:px-8">
+          <!-- Main 2 column grid -->
+          <div class="grid grid-cols-1 items-start gap-4 md:grid-cols-3 md:gap-8">
             <!-- Left column -->
-            <div class="grid grid-cols-1 gap-4 lg:col-span-2">
+            <div class="grid grid-cols-1 gap-4 md:col-span-2 order-2 md:order-1">
               <section aria-labelledby="section-1-title">
                 <div class="overflow-hidden rounded-lg bg-white shadow">
                   <div class="p-6">
@@ -99,9 +95,8 @@
                 </div>
               </section>
             </div>
-
             <!-- Right column -->
-            <div class="grid grid-cols-1 gap-4">
+            <div class="grid grid-cols-1 gap-4 order-1 md:order-2">
               <section aria-labelledby="section-2-title">
                 <div class="overflow-hidden rounded-lg bg-white shadow">
                   <div class="p-6">
@@ -114,7 +109,7 @@
         </div>
       </main>
       <footer>
-        <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+        <div class="mx-auto max-w-3xl px-4 sm:px-6 md:max-w-7xl md:px-8">
           <div class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 sm:text-left">
             <span class="block sm:inline">&copy; {% now "Y" %} The Kyle Cup Inc.</span> <span class="block sm:inline">All rights reserved.</span></div>
         </div>

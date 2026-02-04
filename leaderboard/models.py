@@ -12,6 +12,9 @@ class Athlete(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def avatar(self):
+        return '/static/images/avatars/%s.png' % self.slug
 
 
 class Month(models.Model):

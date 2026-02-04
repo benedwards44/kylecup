@@ -10,7 +10,7 @@ class IndexView(View):
     Redirect straight to relevant month
     """
     def get(self, request, *args, **kwargs):
-        return redirect('month', month=datetime.now().strftime("%b").lower())
+        return redirect('month', slug=datetime.now().strftime("%b").lower())
 
 
 class MonthView(DetailView):
