@@ -38,7 +38,7 @@ class MonthView(DetailView):
 
 class StravaConnectView(View):
     """
-    Redirect straight to relevant month
+    Initiate authorisation flow with Strava
     """
     def get(self, request, *args, **kwargs):
         client = Client()
@@ -52,11 +52,11 @@ class StravaConnectView(View):
     def get_strava_token_record(self):
         return models.StravaToken.objects.first()
     
-    
+
 
 class StravaCallbackView(View):
     """
-    Redirect straight to relevant month
+    Handle callback from Strava and store token
     """
     
     def get(self, request, *args, **kwargs):
@@ -74,4 +74,13 @@ class StravaCallbackView(View):
     
     def get_strava_token_record(self):
         return models.StravaToken.objects.first()
+    
+
+class StravaSyncView(View):
+    """
+    Trigger sync to Strava for a given month
+    """
+    
+    def get(self, request, *args, **kwargs):
+        return redirect('index')
     

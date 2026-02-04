@@ -24,4 +24,5 @@ urlpatterns = [
     path('month/<slug:slug>', views.MonthView.as_view(), name='month'),
     path('strava/connect', views.StravaConnectView.as_view(), name='strava_connect'),
     path('strava/callback', views.StravaCallbackView.as_view(), name='strava_callback'),
+    path('strava/sync/<str:month>', views.StravaSyncView.as_view(), name='strava_sync'),
 ]
