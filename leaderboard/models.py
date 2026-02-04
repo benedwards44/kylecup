@@ -62,7 +62,7 @@ class Activity(models.Model):
     Holds detail for a given activty
     """
 
-    strava_id = models.PositiveIntegerField()
+    strava_id = models.IntegerField()
     date = models.DateTimeField()
     athlete_month_summary = models.ForeignKey(AthleteMonthSummary, on_delete=models.CASCADE, related_name='activities')
     distance = models.DecimalField(max_digits=6, decimal_places=2)

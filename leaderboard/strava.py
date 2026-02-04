@@ -1,5 +1,5 @@
 from stravalib import Client
-from .models import Athlete, Month, Activity, AthleteMonthSummary
+from leaderboard.models import Athlete, Month, Activity, AthleteMonthSummary
 from django.contrib.sites.models import Site
 from django.conf import settings
 from datetime import date
