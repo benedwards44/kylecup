@@ -7,6 +7,7 @@ class Athlete(models.Model):
     Holds details about an athlete
     """
 
+    strava_id = models.PositiveIntegerField()
     name = models.CharField(max_length=80)
     slug = models.SlugField()
 
@@ -59,6 +60,7 @@ class Activity(models.Model):
     Holds detail for a given activty
     """
 
+    strava_id = models.PositiveIntegerField()
     date = models.DateTimeField()
     athlete_month_summary = models.ForeignKey(AthleteMonthSummary, on_delete=models.CASCADE, related_name='activities')
     distance = models.DecimalField(max_digits=6, decimal_places=2)
@@ -70,3 +72,14 @@ class Activity(models.Model):
 
     def __str__(self):
         return '%s ran %skm at %s per km' % (self.athlete_month_summary.athlete.name, str(self.distance), str(self.pace))
+
+
+class StravaToken(models.Model):
+    """
+    Store the Strava API details
+    """
+
+    client_id = models.CharField(max_length=80)
+    client_secret = models.CharField(max_length=80)
+    access_token = models.CharField(max_length=255, blank=True, null=True)
+    refresh_token = models.CharField(max_length=255, blank=True, null=True)
