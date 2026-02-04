@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.views import View
-from django.views.generic import TemplateView
-
+from django.views.generic.detail import DetailView
+from . import models
 from datetime import datetime
 
 
@@ -13,18 +13,18 @@ class IndexView(View):
         return redirect('month', month=datetime.now().strftime("%b").lower())
 
 
-class MonthView(TemplateView):
+class MonthView(DetailView):
     """
     The month view
     """
 
+    model = models.Month
     template_name = 'month.html'
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context["title"] = datetime.strptime(self.kwargs['month'],'%b').strftime('%B')
-        context["current_month"] = self.kwargs['month']
+        context["months"] = models.Month.objects.all()
+        context["activities"] = models.Activity.objects.filter(athlete_month_summary__month=self.get_object())
+        context["athletes"] = models.AthleteMonthSummary.objects.filter(month=self.get_object())
         return context
 

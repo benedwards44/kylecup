@@ -21,5 +21,5 @@ from leaderboard import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.IndexView.as_view(), name='index'),
-    path('month/<str:month>', views.MonthView.as_view(), name='month'),
+    path('month/<slug:slug>', views.MonthView.as_view(), name='month'),
 ]
