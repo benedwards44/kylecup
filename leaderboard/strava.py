@@ -72,7 +72,7 @@ class StravaClient():
         end_date = date(month_record.date.year, month_record.date.month, num_days_in_month[1]).strftime('%Y-%m-%d')
 
         # Refresh activities for each ath,ete
-        for athlete in Athlete.objects.filter(access_token__isnull=False):
+        for athlete in Athlete.objects.filter(strava_access_token__isnull=False):
             self.refresh_token(athlete)
             self.client = Client(access_token=athlete.strava_access_token)
             athlete_month_summary = None
