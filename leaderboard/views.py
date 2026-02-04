@@ -66,6 +66,6 @@ class StravaSyncView(View):
         Sync the activity records for the given month
         """
         client = StravaClient()
-        client.sync_activities()
+        client.sync_activities(self.kwargs['month'])
         return redirect('month', slug=self.kwargs['month'])
     
