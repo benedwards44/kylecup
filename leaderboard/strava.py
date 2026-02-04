@@ -73,7 +73,8 @@ class StravaClient():
 
         # Refresh activities for each ath,ete
         for athlete in Athlete.objects.filter(access_token__isnull=False):
-            self.client = Client(access_token=athlete.access_token)
+            self.refresh_token(athlete)
+            self.client = Client(access_token=athlete.strava_access_token)
             athlete_month_summary = None
             try:
                 athlete_month_summary = AthleteMonthSummary.objects.get(athlete=athlete, month=month_record)
