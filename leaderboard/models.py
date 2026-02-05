@@ -90,6 +90,8 @@ class Activity(models.Model):
             pace_as_decimal = round(1000 / self.pace / 60, 2)
             minutes = str(pace_as_decimal).split('.')[0]
             seconds_as_fraction = str(pace_as_decimal).split('.')[1]
-            seconds_display = (int(seconds_as_fraction) / 100) * 60
+            seconds_display = str(int((int(seconds_as_fraction) / 100) * 60))
+            if len(seconds_display) == 1:
+                seconds_display = seconds_display + '0'
             return minutes + ':' + str(int(seconds_display))
         return ''
