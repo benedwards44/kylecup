@@ -84,21 +84,20 @@ class StravaClient():
                     month=month_record
                 )
                 athlete_month_summary.save()
+                
+            existing_activities = Activity.objects.filter(athlete_month_summary__athlete=athlete, athlete_month_summary__month=month_record).values_list("strava_id", flat=True)
             for activity in self.client.get_activities(after=start_date, before=end_date):
                 # Only save run
-                if activity.type == 'Run' or activity.type == 'Walk':
-                    try:
-                        existing_activity = Activity.objects.get(strava_id=activity.id)
-                    except Activity.DoesNotExist:
-                        # Create the new activity
-                        new_activity = Activity()
-                        new_activity.strava_id = activity.id 
-                        new_activity.date = activity.start_date
-                        new_activity.distance = activity.distance / 1000
-                        new_activity.pace = activity.average_speed
-                        new_activity.athlete_month_summary = athlete_month_summary
-                        new_activity.type = activity.type
-                        new_activity.save()
+                if (activity.type == 'Run' or activity.type == 'Walk') and activity.id not in existing_activities:
+                    # Create the new activity
+                    new_activity = Activity()
+                    new_activity.strava_id = activity.id 
+                    new_activity.date = activity.start_date
+                    new_activity.distance = activity.distance / 1000
+                    new_activity.pace = activity.average_speed
+                    new_activity.athlete_month_summary = athlete_month_summary
+                    new_activity.type = activity.type
+                    new_activity.save()
 
 
 
