@@ -69,7 +69,7 @@ class Activity(models.Model):
     date = models.DateTimeField()
     athlete_month_summary = models.ForeignKey(AthleteMonthSummary, on_delete=models.CASCADE, related_name='activities')
     distance = models.DecimalField(max_digits=6, decimal_places=2)
-    pace = models.DecimalField(max_digits=6, decimal_places=2)
+    pace = models.DecimalField(max_digits=6, decimal_places=4)
 
     class Meta:
         verbose_name_plural = "activities"
@@ -84,3 +84,12 @@ class Activity(models.Model):
         elif self.type == 'Walk':
             return 'walked'
         return 'ran'
+    
+    def pace_display(self):
+        if self.pace:
+            pace_as_decimal = round(1000 / self.pace / 60, 2)
+            minutes = str(pace_as_decimal).split('.')[0]
+            seconds_as_fraction = str(pace_as_decimal).split('.')[1]
+            seconds_display = (int(seconds_as_fraction) / 100) * 60
+            return minutes + ':' + str(int(seconds_display))
+        return ''
