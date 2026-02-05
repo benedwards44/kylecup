@@ -95,3 +95,9 @@ class Activity(models.Model):
                 seconds_display = seconds_display + '0'
             return minutes + ':' + str(int(seconds_display))
         return ''
+    
+    def date_display(self):
+        return self.date.strftime('%-d') + self.suffix(self.date.day) + self.date.strftime(' %b @ %-I:%M %p')
+    
+    def suffix(self, day):
+        return {1:'st',2:'nd',3:'rd'}.get(day%20, 'th')
