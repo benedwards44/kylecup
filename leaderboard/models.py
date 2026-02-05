@@ -1,5 +1,6 @@
 from django.db import models
 from decimal import *
+from django.utils import timezone
 
 
 class Athlete(models.Model):
@@ -97,7 +98,8 @@ class Activity(models.Model):
         return ''
     
     def date_display(self):
-        return self.date.strftime('%-d') + self.suffix(self.date.day) + self.date.strftime(' %b @ %-I:%M %p')
+        date_converted = timezone.localtime(self.date)
+        return date_converted.strftime('%-d') + self.suffix(date_converted.day) + date_converted.strftime(' %b @ %-I:%M %p')
     
     def suffix(self, day):
         return {1:'st',2:'nd',3:'rd'}.get(day%20, 'th')
