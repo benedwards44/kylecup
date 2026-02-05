@@ -65,6 +65,7 @@ class Activity(models.Model):
     """
 
     strava_id = models.BigIntegerField()
+    type = models.CharField(max_length=40)
     date = models.DateTimeField()
     athlete_month_summary = models.ForeignKey(AthleteMonthSummary, on_delete=models.CASCADE, related_name='activities')
     distance = models.DecimalField(max_digits=6, decimal_places=2)
@@ -76,3 +77,10 @@ class Activity(models.Model):
 
     def __str__(self):
         return '%s ran %skm at %s per km' % (self.athlete_month_summary.athlete.name, str(self.distance), str(self.pace))
+    
+    def type_display(self):
+        if self.type == 'Run':
+            return 'ran'
+        elif self.type == 'Walk':
+            return 'walked'
+        return 'ran'
