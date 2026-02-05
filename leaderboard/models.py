@@ -73,7 +73,7 @@ class Activity(models.Model):
 
     class Meta:
         verbose_name_plural = "activities"
-        ordering = ['date']
+        ordering = ['-date']
 
     def __str__(self):
         return '%s ran %skm at %s per km' % (self.athlete_month_summary.athlete.name, str(self.distance), str(self.pace))
