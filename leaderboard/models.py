@@ -14,8 +14,6 @@ class Athlete(models.Model):
     strava_access_token = models.CharField(max_length=255, blank=True, null=True)
     strava_refresh_token = models.CharField(max_length=255, blank=True, null=True)
 
-    icon_colour = models.CharField(max_length=20, blank=True, null=True)
-
     def __str__(self):
         return self.name
     
