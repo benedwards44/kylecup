@@ -86,14 +86,13 @@ class Activity(models.Model):
     
     def pace_display(self):
         if self.pace:
-            pace_as_decimal = round(1000 / self.pace / 60, 2)
-            minutes = str(pace_as_decimal).split('.')[0]
-            seconds_as_fraction = str(pace_as_decimal).split('.')[1]
-            seconds_display = str(int((int(seconds_as_fraction) / 100) * 60))
-            if len(seconds_display) == 1:
-                seconds_display = seconds_display + '0'
-            return minutes + ':' + str(int(seconds_display))
-        return ''
+            seconds_per_km = 1000 / self.pace
+            minutes = int(seconds_per_km // 60)
+            seconds = int(round(seconds_per_km % 60))
+            if seconds == 60:
+                minutes += 1
+                seconds = 0
+            return f"{minutes}:{seconds:02d} min/km"
     
     def date_display(self):
         date_converted = timezone.localtime(self.date)
