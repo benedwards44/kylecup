@@ -25,7 +25,7 @@ class MonthView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["months"] = models.Month.objects.all()
-        context["activities"] = models.Activity.objects.filter(athlete_month_summary__month=self.get_object())
+        context["activities"] = models.Activity.objects.filter(invalid=False, athlete_month_summary__month=self.get_object())
         context["athletes"] = self.athletes_ordered()
         return context
     

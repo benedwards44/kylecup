@@ -53,7 +53,7 @@ class AthleteMonthSummary(models.Model):
 
     def total_distance(self):
         total = Decimal(0)
-        for activity in self.activities.all():
+        for activity in self.activities.filter(invalid=False):
             total = total + activity.distance 
         return total
 
@@ -69,6 +69,10 @@ class Activity(models.Model):
     athlete_month_summary = models.ForeignKey(AthleteMonthSummary, on_delete=models.CASCADE, related_name='activities')
     distance = models.DecimalField(max_digits=6, decimal_places=2)
     pace = models.DecimalField(max_digits=6, decimal_places=4)
+    invalid = models.BooleanField(
+        default=False, 
+        help_text='Used to manually invalidate an activity if it\'s deemed to be outside the spirit of the game'
+    )
 
     class Meta:
         verbose_name_plural = "activities"
