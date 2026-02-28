@@ -67,7 +67,8 @@ class StravaClient():
         """
 
         month_record = Month.objects.get(slug=month_slug)
-        start_date = (month_record.date - timedelta(days=1)).strftime('%Y-%m-%d')
+        #start_date = (month_record.date - timedelta(days=1)).strftime('%Y-%m-%d')
+        start_date = month_record.date.strftime('%Y-%m-%d')
         num_days_in_month = calendar.monthrange(month_record.date.year, month_record.date.month)
         end_date = (date(month_record.date.year, month_record.date.month, num_days_in_month[1]) + timedelta(days=1)).strftime('%Y-%m-%d')
 
