@@ -10,6 +10,7 @@ class Athlete(models.Model):
 
     name = models.CharField(max_length=80)
     slug = models.SlugField()
+    is_double_points = models.BooleanField(default=False)
     strava_id = models.PositiveIntegerField(blank=True, null=True)
     strava_access_token = models.CharField(max_length=255, blank=True, null=True)
     strava_refresh_token = models.CharField(max_length=255, blank=True, null=True)
@@ -54,7 +55,13 @@ class AthleteMonthSummary(models.Model):
     def total_distance(self):
         total = Decimal(0)
         for activity in self.activities.filter(invalid=False):
-            total = total + activity.distance 
+            total = total + activity.distance_calculated() 
+        return total
+    
+    def total_distance_raw(self):
+        total = Decimal(0)
+        for activity in self.activities.filter(invalid=False):
+            total = total + activity.distance
         return total
 
 
@@ -80,6 +87,11 @@ class Activity(models.Model):
 
     def __str__(self):
         return '%s ran %skm at %s per km' % (self.athlete_month_summary.athlete.name, str(self.distance), str(self.pace))
+    
+    def distance_calculated(self):
+        if self.athlete_month_summary.athlete.is_double_points:
+            return self.distance * 2
+        return self.distance
     
     def type_display(self):
         if self.type == 'Run':

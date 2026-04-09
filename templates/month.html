@@ -32,7 +32,12 @@
           <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
             <div>
               <p class="text-sm text-gray-500">
-                <span class="font-bold">{{ activity.athlete_month_summary.athlete.name }}</span> ran <span class="font-bold">{{ activity.distance }} km</span> at <span class="font-bold">{{ activity.pace_display }} per km.</span>
+                <span class="font-bold">{{ activity.athlete_month_summary.athlete.name }}</span> ran 
+                <span class="font-bold">{{ activity.distance }} km</span> 
+                {% if activity.athlete_month_summary.athlete.is_double_points %}
+                (worth <span class="font-bold">{{ activity.distance_calculated}} km</span>)
+                {% endif %}
+                at <span class="font-bold">{{ activity.pace_display }} per km.</span>
               </p>
             </div>
             <div class="whitespace-nowrap text-right text-sm text-gray-500">
@@ -71,7 +76,12 @@
   <div class="min-w-0 flex-1">
     <span aria-hidden="true" class="absolute inset-0"></span>
     <p class="text-sm font-medium text-gray-900">{{ athlete.athlete.name }}</p>
-    <p class="truncate text-sm text-gray-500">{{ athlete.total_distance }}km</p>
+    <p class="truncate text-sm text-gray-500">
+      {{ athlete.total_distance }}km
+      {% if athlete.athlete.is_double_points %}
+      <span class="text-xs">({{ athlete.total_distance_raw }}km)</span>
+      {% endif %}
+    </p>
   </div>
 </div>
 {% endfor %}
