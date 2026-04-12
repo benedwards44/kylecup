@@ -30,6 +30,7 @@ class Month(models.Model):
     name = models.CharField(max_length=80)
     slug = models.SlugField()
     date = models.DateField()
+    is_double_points_month = models.BooleanField(default=False)
 
     class Meta:
         ordering = ['date']
@@ -89,7 +90,7 @@ class Activity(models.Model):
         return '%s ran %skm at %s per km' % (self.athlete_month_summary.athlete.name, str(self.distance), str(self.pace))
     
     def distance_calculated(self):
-        if self.athlete_month_summary.athlete.is_double_points:
+        if self.athlete_month_summary.athlete.is_double_points and self.athlete_month_summary.month.is_double_points_month:
             return self.distance * 2
         return self.distance
     
