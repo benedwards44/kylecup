@@ -31,6 +31,7 @@ class Month(models.Model):
     slug = models.SlugField()
     date = models.DateField()
     is_double_points_month = models.BooleanField(default=False)
+    last_sync_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         ordering = ['date']
@@ -52,6 +53,12 @@ class AthleteMonthSummary(models.Model):
 
     def __str__(self):
         return self.athlete.name + ' - ' + self.month.name
+    
+    def athlete_name(self):
+        return self.athlete.name
+    
+    def athlete_avatar(self):
+        return 'https://kylecup.edwards.nz' + self.athlete.avatar()
 
     def total_distance(self):
         total = Decimal(0)
@@ -87,7 +94,18 @@ class Activity(models.Model):
         ordering = ['-date']
 
     def __str__(self):
-        return '%s ran %skm at %s per km' % (self.athlete_month_summary.athlete.name, str(self.distance), str(self.pace))
+        return self.display()
+    
+    def display(self):
+        return '%s ran %skm%sat %s.' % (
+            self.athlete_month_summary.athlete.name, 
+            str(self.distance), 
+            (' (worth ' + str(self.distance_calculated()) + 'km) ')  if self.athlete_month_summary.athlete.is_double_points else ' ',
+            str(self.pace_display()),
+        )
+    
+    def athlete_name(self):
+        return self.athlete_month_summary.athlete.name
     
     def distance_calculated(self):
         if self.athlete_month_summary.athlete.is_double_points and self.athlete_month_summary.month.is_double_points_month:

@@ -3,6 +3,7 @@ from leaderboard.models import Athlete, Month, Activity, AthleteMonthSummary
 from django.contrib.sites.models import Site
 from django.conf import settings
 from datetime import date, timedelta
+from django.utils import timezone
 from django.conf import settings
 import calendar
 
@@ -61,6 +62,18 @@ class StravaClient():
         athlete.save()
 
 
+    def sync_activities_if_stale(self, month_slug, month=None):
+        """
+        Run the sync but only if hasn't been synced in a while
+        """
+        if not settings.IS_LOCAL:
+            filter_date = timezone.now() - timedelta(hours=1)
+            if not month:
+                month = Month.objects.get(slug=month_slug)
+            if not month.last_sync_date or month.last_sync_date < filter_date:
+                self.sync_activities(month.slug)
+
+
     def sync_activities(self, month_slug):
         """
         For a given month, sync the activities
@@ -99,6 +112,10 @@ class StravaClient():
                     new_activity.athlete_month_summary = athlete_month_summary
                     new_activity.type = activity.type
                     new_activity.save()
+        
+        # Update last sync date
+        month_record.last_sync_date = timezone.now()
+        month_record.save()
 
 
 

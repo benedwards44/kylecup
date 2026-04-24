@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from leaderboard import views
+from .api import api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +26,5 @@ urlpatterns = [
     path('strava/connect', views.StravaConnectView.as_view(), name='strava_connect'),
     path('strava/callback', views.StravaCallbackView.as_view(), name='strava_callback'),
     path('strava/sync/<str:month>', views.StravaSyncView.as_view(), name='strava_sync'),
+    path('api/', api.urls),
 ]
