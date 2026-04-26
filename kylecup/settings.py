@@ -60,10 +60,12 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'leaderboard',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -75,6 +77,16 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'kylecup.urls'
+
+CORS_ALLOWED_ORIGINS = [
+    "capacitor://localhost",
+    "http://localhost",
+    "https://kylecup.edwards.nz",
+]
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_CREDENTIALS = True
+
 
 TEMPLATES = [
     {
