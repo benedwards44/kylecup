@@ -65,6 +65,9 @@
 {% if object.slug == 'feb' %}
 <img src="{% static 'images/feb.png' %}" />
 {% endif %}
+{% if object.slug == 'mar' %}
+<img src="{% static 'images/mar.png' %}" />
+{% endif %}
 {% if not athletes %}
   {% include 'snippets/alert.html' with message='No athletes to display.' %}
 {% else %}
