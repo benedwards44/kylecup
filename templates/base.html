@@ -84,6 +84,7 @@
       </header>
       <main class="-mt-24 pb-8">
         <div class="mx-auto max-w-3xl px-4 sm:px-6 md:max-w-7xl md:px-8">
+          {% block layout %}
           <!-- Main 2 column grid -->
           <div class="grid grid-cols-1 items-start gap-4 md:grid-cols-3 md:gap-8">
             <!-- Left column -->
@@ -107,12 +108,20 @@
               </section>
             </div>
           </div>
+          {% endblock %}
         </div>
       </main>
       <footer>
         <div class="mx-auto max-w-3xl px-4 sm:px-6 md:max-w-7xl md:px-8">
-          <div class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 sm:text-left">
-            <span class="block sm:inline">&copy; {% now "Y" %} The Kyle Cup Inc.</span> <span class="block sm:inline">All rights reserved.</span></div>
+          <div class="border-t border-gray-200 py-8 text-center text-sm text-gray-500 sm:text-left sm:flex sm:justify-between">
+            <div>
+              <span class="block sm:inline">&copy; {% now "Y" %} The Kyle Cup Inc.</span> <span class="block sm:inline">All rights reserved.</span>
+            </div>
+            <div class="mt-2 sm:mt-0 space-x-4">
+              <a href="{% url 'privacy' %}" class="hover:text-gray-700">Privacy Policy</a>
+              <a href="{% url 'support' %}" class="hover:text-gray-700">Support</a>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

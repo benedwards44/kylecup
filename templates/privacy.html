@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block layout %}
+<section>
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="p-6">
+<div class="border-b border-blue-900 pb-4">
+  <h1 class="text-3xl font-bold">Privacy Policy</h1>
+</div>
+<div class="mt-5 prose prose-sm max-w-none text-gray-700 space-y-4">
+  <p class="text-sm text-gray-500">Last updated: {{ today }}</p>
+
+  <h2 class="text-xl font-semibold text-gray-900 mt-6">Introduction</h2>
+  <p>The Kyle Cup ("we", "us", or "our") operates the Kyle Cup leaderboard application. This Privacy Policy explains how we handle information when you use our service.</p>
+
+  <h2 class="text-xl font-semibold text-gray-900 mt-6">Information We Collect</h2>
+  <p>Our application connects to Strava to retrieve activity data for leaderboard purposes. The information accessed from Strava includes:</p>
+  <ul class="list-disc pl-5 space-y-1">
+    <li>Your Strava display name and profile photo</li>
+    <li>Running activity data (distance, pace, date)</li>
+  </ul>
+  <p>We do <strong>not</strong> collect, store, or process any of the following:</p>
+  <ul class="list-disc pl-5 space-y-1">
+    <li>Location or GPS data</li>
+    <li>Personal user accounts or login credentials (beyond Strava OAuth tokens)</li>
+    <li>Payment or financial information</li>
+    <li>Device or browser tracking data</li>
+    <li>Cookies for advertising or analytics purposes</li>
+  </ul>
+
+  <h2 class="text-xl font-semibold text-gray-900 mt-6">How We Use Information</h2>
+  <p>Activity data retrieved from Strava is used solely to calculate and display the Kyle Cup leaderboard. We do not sell, share, or distribute your data to any third parties.</p>
+
+  <h2 class="text-xl font-semibold text-gray-900 mt-6">Strava Integration</h2>
+  <p>We use Strava's API to access activity data. You can revoke our access to your Strava account at any time through your <a href="https://www.strava.com/settings/apps" class="text-blue-700 underline">Strava settings</a>. Once access is revoked, we will no longer retrieve new data from your account.</p>
+
+  <h2 class="text-xl font-semibold text-gray-900 mt-6">Data Retention</h2>
+  <p>Activity data is retained for the duration of the current Kyle Cup competition year. Historical leaderboard data may be retained for reference purposes.</p>
+
+  <h2 class="text-xl font-semibold text-gray-900 mt-6">Data Security</h2>
+  <p>We take reasonable measures to protect the data we hold. All connections to our service are encrypted via HTTPS.</p>
+
+  <h2 class="text-xl font-semibold text-gray-900 mt-6">Children's Privacy</h2>
+  <p>Our service is not directed at children under the age of 13, and we do not knowingly collect information from children.</p>
+
+  <h2 class="text-xl font-semibold text-gray-900 mt-6">Changes to This Policy</h2>
+  <p>We may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated revision date.</p>
+
+  <h2 class="text-xl font-semibold text-gray-900 mt-6">Contact Us</h2>
+  <p>If you have questions about this Privacy Policy, please <a href="{% url 'support' %}" class="text-blue-700 underline">contact us</a>.</p>
+</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

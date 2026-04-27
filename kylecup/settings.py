@@ -21,6 +21,12 @@ env = environ.Env(
     DEBUG=(bool, False),
     STRAVA_CLIENT_ID=(int, None),
     STRAVA_CLIENT_SECRET=(str, ''),
+    EMAIL_HOST=(str, 'localhost'),
+    EMAIL_PORT=(int, 587),
+    EMAIL_HOST_USER=(str, ''),
+    EMAIL_HOST_PASSWORD=(str, ''),
+    EMAIL_USE_TLS=(bool, True),
+    DEFAULT_FROM_EMAIL=(str, 'noreply@edwards.nz'),
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
@@ -180,3 +186,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STRAVA_CLIENT_ID = env('STRAVA_CLIENT_ID')
 STRAVA_CLIENT_SECRET = env('STRAVA_CLIENT_SECRET')
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'kylecup@mg.edwards.nz'

@@ -1,6 +1,7 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.detail import DetailView
+from django.core.mail import send_mail
 from . import models
 from datetime import timedelta
 from django.utils import timezone
@@ -77,4 +78,44 @@ class StravaSyncView(View):
         client = StravaClient()
         client.sync_activities(self.kwargs['month'])
         return redirect('month', slug=self.kwargs['month'])
+
+
+class PrivacyView(View):
+    def get(self, request):
+        return render(request, 'privacy.html', {
+            'months': models.Month.objects.all(),
+            'today': timezone.now().date(),
+        })
+
+
+class SupportView(View):
+    def get(self, request):
+        return render(request, 'support.html', {
+            'months': models.Month.objects.all(),
+        })
+
+    def post(self, request):
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        message = request.POST.get('message', '').strip()
+
+        if not all([name, email, message]):
+            return render(request, 'support.html', {
+                'months': models.Month.objects.all(),
+                'error': 'Please fill in all fields.',
+                'form_data': {'name': name, 'email': email, 'message': message},
+            })
+
+        send_mail(
+            subject=f'Kyle Cup Contact: {name}',
+            message=f'From: {name} <{email}>\n\n{message}',
+            from_email=None,
+            recipient_list=['ben@edwards.nz'],
+            fail_silently=False,
+        )
+
+        return render(request, 'support.html', {
+            'months': models.Month.objects.all(),
+            'success': True,
+        })
     
