@@ -24,10 +24,10 @@ env = environ.Env(
     EMAIL_HOST=(str, 'localhost'),
     EMAIL_PORT=(int, 587),
     EMAIL_HOST_USER=(str, ''),
-    REDIS_URL=(str, 'redis://localhost:6379/0'),
     EMAIL_HOST_PASSWORD=(str, ''),
     EMAIL_USE_TLS=(bool, True),
-    DEFAULT_FROM_EMAIL=(str, 'noreply@edwards.nz'),
+    REDIS_URL=(str, 'redis://localhost:6379/0'),
+    DEFAULT_FROM_EMAIL=(str, 'kylecup@mg.edwards.nz'),
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 

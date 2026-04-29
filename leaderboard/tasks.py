@@ -11,8 +11,8 @@ def sync_activities():
     client = StravaClient()
     client.sync_activities(timezone.now().strftime("%b").lower())
     send_mail(
-        subject='Successfully ran Strava sync.'
-        message='Yay, it synced'
-        from_email='kylecup@mg.edwards.nz',
+        subject='Successfully ran Strava sync.',
+        message='Yay, it synced',
+        from_email=None,
         recipient_list=['ben@edwards.nz'],
     )
