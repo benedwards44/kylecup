@@ -56,3 +56,13 @@ def get_leaderboard(request, month_slug):
     """
     summary = AthleteMonthSummary.objects.filter(month__slug=month_slug)
     return sorted(summary, key=lambda athlete: athlete.total_distance(), reverse=True)
+
+
+@api.post("/{month_slug}/sync")
+def sync_activities(request, month_slug):
+    """
+    Sync activities for a given month. This is intended to be called manually when needed.
+    """
+    client = StravaClient()
+    client.sync_activities(month_slug)
+    return {"message": "Successfully ran Strava sync."}
