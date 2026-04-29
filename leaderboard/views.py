@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.detail import DetailView
-from django.core.mail import send_mail
+from leaderboard.mailer import send_email
 from . import models
 from datetime import timedelta
 from django.utils import timezone
@@ -106,12 +106,9 @@ class SupportView(View):
                 'form_data': {'name': name, 'email': email, 'message': message},
             })
 
-        send_mail(
+        send_email(
             subject=f'Kyle Cup Contact: {name}',
-            message=f'From: {name} <{email}>\n\n{message}',
-            from_email=None,
-            recipient_list=['ben@edwards.nz'],
-            fail_silently=False,
+            message=f'From: {name} <{email}>\n\n{message}'
         )
 
         return render(request, 'support.html', {

@@ -27,6 +27,7 @@ env = environ.Env(
     EMAIL_HOST_PASSWORD=(str, ''),
     EMAIL_USE_TLS=(bool, True),
     REDIS_URL=(str, 'redis://localhost:6379/0'),
+    MAILGUN_API_KEY=(str, ''),
     DEFAULT_FROM_EMAIL=(str, 'kylecup@mg.edwards.nz'),
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -196,6 +197,7 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'kylecup@mg.edwards.nz'
+MAILGUN_API_KEY = env('MAILGUN_API_KEY')
 
 # CELERY CONFIG
 REDIS_URL = env('REDIS_URL')
