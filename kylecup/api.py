@@ -4,7 +4,7 @@ from leaderboard.models import Activity, AthleteMonthSummary
 from typing import List
 from leaderboard.strava import StravaClient
 import decimal
-from leaderboard.tasks import sync_activities
+from leaderboard.tasks import sync_activities as async_sync
 
 class ActivitySchema(ModelSchema):
 
@@ -42,7 +42,7 @@ def get_activities(request, month_slug):
     """
     Retrieve activities
     """
-    sync_activities.delay()
+    async_sync.delay()
     client = StravaClient()
     client.sync_activities_if_stale(month_slug)
     return Activity.objects.filter(
