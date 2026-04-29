@@ -6,6 +6,7 @@ from datetime import date, timedelta
 from django.utils import timezone
 from django.conf import settings
 import calendar
+from leaderboard.utils import sort_leaderboard
 
 
 class StravaClient():
@@ -116,6 +117,9 @@ class StravaClient():
         # Update last sync date
         month_record.last_sync_date = timezone.now()
         month_record.save()
+        
+        # Sort and save the leaderboard
+        sort_leaderboard(month_slug)
 
 
 

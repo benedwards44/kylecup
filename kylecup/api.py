@@ -54,8 +54,7 @@ def get_leaderboard(request, month_slug):
     """
     Retrieve leaderboard
     """
-    summary = AthleteMonthSummary.objects.filter(month__slug=month_slug)
-    return sorted(summary, key=lambda athlete: athlete.total_distance(), reverse=True)
+    return AthleteMonthSummary.objects.filter(month__slug=month_slug)
 
 
 @api.post("/{month_slug}/sync")

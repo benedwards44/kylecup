@@ -47,9 +47,10 @@ class AthleteMonthSummary(models.Model):
 
     month = models.ForeignKey(Month, on_delete=models.CASCADE)
     athlete = models.ForeignKey(Athlete, on_delete=models.CASCADE)
+    current_position = models.PositiveIntegerField(blank=True, null=True)
 
     class Meta:
-        ordering = ['month__date']
+        ordering = ['current_position', 'month__date']
 
     def __str__(self):
         return self.athlete.name + ' - ' + self.month.name
