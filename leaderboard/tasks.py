@@ -1,6 +1,7 @@
 from leaderboard.strava import StravaClient
 from django.utils import timezone
 from celery import shared_task
+from django.core.mail import send_mail
 
 @shared_task
 def sync_activities():
@@ -9,3 +10,9 @@ def sync_activities():
     """
     client = StravaClient()
     client.sync_activities(timezone.now().strftime("%b").lower())
+    send_mail(
+        subject='Successfully ran Strava sync.'
+        message='Yay, it synced'
+        from_email='kylecup@mg.edwards.nz',
+        recipient_list=['ben@edwards.nz'],
+    )

@@ -109,7 +109,7 @@ class SupportView(View):
         send_mail(
             subject=f'Kyle Cup Contact: {name}',
             message=f'From: {name} <{email}>\n\n{message}',
-            from_email=None,
+            from_email='kylecup@mg.edwards.nz',
             recipient_list=['ben@edwards.nz'],
             fail_silently=False,
         )
