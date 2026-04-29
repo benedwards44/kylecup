@@ -136,3 +136,11 @@ class Activity(models.Model):
     
     def suffix(self, day):
         return {1:'st',2:'nd',3:'rd'}.get(day%20, 'th')
+
+
+class DeviceRegistration(models.Model):
+    token = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.token[:20] + '...'

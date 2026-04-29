@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.conf import settings
 import calendar
 from leaderboard.utils import sort_leaderboard
+from leaderboard.notifications import notify_new_activity
 
 
 class StravaClient():
@@ -113,6 +114,7 @@ class StravaClient():
                     new_activity.athlete_month_summary = athlete_month_summary
                     new_activity.type = activity.type
                     new_activity.save()
+                    notify_new_activity(new_activity)
         
         # Update last sync date
         month_record.last_sync_date = timezone.now()

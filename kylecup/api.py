@@ -1,6 +1,6 @@
-from ninja import NinjaAPI
+from ninja import NinjaAPI, Schema
 from ninja import ModelSchema
-from leaderboard.models import Activity, AthleteMonthSummary
+from leaderboard.models import Activity, AthleteMonthSummary, DeviceRegistration
 from typing import List
 from leaderboard.strava import StravaClient
 import decimal
@@ -32,6 +32,9 @@ class AthleteMonthSummarySchema(ModelSchema):
         fields = [
             'id',
         ]
+
+class PushTokenSchema(Schema):
+    token: str
 
 api = NinjaAPI()
 
@@ -65,3 +68,9 @@ def sync_activities(request, month_slug):
     client = StravaClient()
     client.sync_activities(month_slug)
     return {"message": "Successfully ran Strava sync."}
+
+
+@api.post("/push-token/register")
+def register_push_token(request, payload: PushTokenSchema):
+    DeviceRegistration.objects.get_or_create(token=payload.token)
+    return {"message": "Token registered."}

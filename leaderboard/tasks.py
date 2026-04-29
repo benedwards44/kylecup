@@ -10,7 +10,3 @@ def sync_activities():
     """
     client = StravaClient()
     client.sync_activities(timezone.now().strftime("%b").lower())
-    send_email(
-        subject='Successfully ran Strava sync.',
-        message='Yay, it synced',
-    )

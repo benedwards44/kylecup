@@ -20,3 +20,8 @@ class AthleteAdmin(admin.ModelAdmin):
 @admin.register(models.Activity)
 class ActivityAdmin(admin.ModelAdmin):
     list_display = ['athlete_month_summary', 'distance', 'pace']
+
+
+@admin.register(models.DeviceRegistration)
+class DeviceRegistrationAdmin(admin.ModelAdmin):
+    list_display = ['token', 'created_at']
