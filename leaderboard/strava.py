@@ -67,12 +67,15 @@ class StravaClient():
         """
         Run the sync but only if hasn't been synced in a while
         """
+        self.sync_activities(month.slug)
+        """
         if not settings.IS_LOCAL and month_slug == timezone.now().strftime("%b").lower():
             filter_date = timezone.now() - timedelta(hours=1)
             if not month:
                 month = Month.objects.get(slug=month_slug)
             if not month.last_sync_date or month.last_sync_date < filter_date:
                 self.sync_activities(month.slug)
+        """
 
 
     def sync_activities(self, month_slug):
