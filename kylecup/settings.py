@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_beat',
     'corsheaders',
     'leaderboard',
 ]
@@ -194,3 +195,9 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'kylecup@mg.edwards.nz'
+
+# CELERY CONFIG
+REDIS_URL = env('REDIS_URL')
+CELERY_BROKER_URL = REDIS_URL
+BROKER_POOL_LIMIT = 1
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
