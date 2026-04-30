@@ -1,7 +1,10 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.views import View
 from django.views.generic.detail import DetailView
 from leaderboard.mailer import send_email
+from leaderboard.notifications import send_push_notification
+from leaderboard.models import DeviceRegistration
 from . import models
 from datetime import timedelta
 from django.utils import timezone
@@ -79,6 +82,33 @@ class PrivacyView(View):
         return render(request, 'privacy.html', {
             'months': models.Month.objects.all(),
             'today': timezone.now().date(),
+        })
+
+
+class NotifyView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, 'notify.html', {
+            'months': models.Month.objects.all(),
+        })
+
+    def post(self, request):
+        title = request.POST.get('title', '').strip()
+        message = request.POST.get('message', '').strip()
+
+        if not all([title, message]):
+            return render(request, 'notify.html', {
+                'months': models.Month.objects.all(),
+                'error': 'Please fill in all fields.',
+                'form_data': {'title': title, 'message': message},
+            })
+
+        device_count = DeviceRegistration.objects.count()
+        send_push_notification(title=title, body=message)
+
+        return render(request, 'notify.html', {
+            'months': models.Month.objects.all(),
+            'success': True,
+            'device_count': device_count,
         })
 
 
