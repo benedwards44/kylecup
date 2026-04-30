@@ -8,7 +8,7 @@ from exponent_server_sdk import (
     PushTicketError,
 )
 
-from leaderboard.models import DeviceRegistration
+from leaderboard.models import AthleteMonthSummary, DeviceRegistration
 
 logger = logging.getLogger(__name__)
 
@@ -40,11 +40,44 @@ def send_push_notification(title, body, data=None):
 
 
 def notify_new_activity(activity):
+    summary = activity.athlete_month_summary
+    month = summary.month
+    name = summary.athlete.name
+    distance = activity.distance
+    pace = activity.pace_display()
+
+    ranked = sorted(
+        AthleteMonthSummary.objects.filter(month=month),
+        key=lambda s: s.total_distance(),
+        reverse=True,
+    )
+
+    position = next(
+        (i + 1 for i, s in enumerate(ranked) if s.id == summary.id),
+        None,
+    )
+
+    body = f'{name} ran {distance}km at {pace}'
+
+    if position and position > 1:
+        above = ranked[position - 2]
+        gap = above.total_distance() - summary.total_distance()
+        ordinal = _ordinal(position - 1)
+        body += f' and is now {gap:.2f}km from {ordinal} place.'
+    else:
+        body += '.'
+
     send_push_notification(
         title='New Activity',
-        body=activity.display(),
+        body=body,
         data={'type': 'activity', 'activity_id': activity.id},
     )
+
+
+def _ordinal(n):
+    if 11 <= (n % 100) <= 13:
+        return f'{n}th'
+    return f'{n}{["th", "st", "nd", "rd"][min(n % 10, 4)] if n % 10 < 4 else "th"}'
 
 
 def notify_leaderboard_change(changes):
