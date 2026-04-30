@@ -63,7 +63,11 @@ def notify_new_activity(activity):
         above = ranked[position - 2]
         gap = above.total_distance() - summary.total_distance()
         ordinal = _ordinal(position - 1)
-        body += f' and is now {gap:.2f}km from {ordinal} place.'
+        body += f' and is now {gap:.2f}km behind {above.athlete.name} in {ordinal} place.'
+    elif position == 1 and len(ranked) > 1:
+        below = ranked[1]
+        gap = summary.total_distance() - below.total_distance()
+        body += f' and is now {gap:.2f}km ahead of {below.athlete.name} in 1st place.'
     else:
         body += '.'
 
