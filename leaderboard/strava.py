@@ -84,7 +84,7 @@ class StravaClient():
         month_record = Month.objects.get(slug=month_slug)
 
         if month_record.last_sync_date:
-            start_date = (month_record.last_sync_date - timedelta(days=1)).strftime('%Y-%m-%d')
+            start_date = month_record.last_sync_date.strftime('%Y-%m-%d')
         else:
             start_date = month_record.date.strftime('%Y-%m-%d')
 
@@ -105,7 +105,7 @@ class StravaClient():
                 )
                 athlete_month_summary.save()
 
-            existing_activities = Activity.objects.filter(athlete_month_summary__athlete=athlete, athlete_month_summary__month=month_record).values_list("strava_id", flat=True)
+            existing_activities = Activity.objects.filter(athlete_month_summary__athlete=athlete).values_list("strava_id", flat=True)
             for activity in self.client.get_activities(after=start_date, before=end_date):
                 # Only save run
                 if activity.type == 'Run' and activity.id not in existing_activities:
