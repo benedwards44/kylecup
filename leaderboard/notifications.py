@@ -57,7 +57,7 @@ def notify_new_activity(activity):
         None,
     )
 
-    body = f'{name} ran {distance}km at {pace}'
+    body = f'{name} ran {distance:.2f}km at {pace}'
 
     if position and position > 1:
         above = ranked[position - 2]
