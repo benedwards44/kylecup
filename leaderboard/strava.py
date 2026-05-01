@@ -5,9 +5,9 @@ from django.conf import settings
 from datetime import date, timedelta
 from django.utils import timezone
 from django.conf import settings
-import calendar
 from leaderboard.utils import sort_leaderboard
 from leaderboard.notifications import notify_new_activity
+import calendar
 
 
 class StravaClient():
@@ -82,8 +82,12 @@ class StravaClient():
         """
 
         month_record = Month.objects.get(slug=month_slug)
-        #start_date = (month_record.date - timedelta(days=1)).strftime('%Y-%m-%d')
-        start_date = month_record.date.strftime('%Y-%m-%d')
+
+        if month_record.last_sync_date:
+            start_date = (month_record.last_sync_date - timedelta(days=1)).strftime('%Y-%m-%d')
+        else:
+            start_date = month_record.date.strftime('%Y-%m-%d')
+
         num_days_in_month = calendar.monthrange(month_record.date.year, month_record.date.month)
         end_date = (date(month_record.date.year, month_record.date.month, num_days_in_month[1]) + timedelta(days=1)).strftime('%Y-%m-%d')
 
