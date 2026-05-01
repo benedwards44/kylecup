@@ -106,6 +106,7 @@ class StravaClient():
                 athlete_month_summary.save()
 
             existing_activities = Activity.objects.filter(athlete_month_summary__athlete=athlete).values_list("strava_id", flat=True)
+            
             for activity in self.client.get_activities(after=start_date, before=end_date):
                 # Only save run
                 if activity.type == 'Run' and activity.id not in existing_activities:
