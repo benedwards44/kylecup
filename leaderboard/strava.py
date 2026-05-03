@@ -84,7 +84,7 @@ class StravaClient():
         month_record = Month.objects.get(slug=month_slug)
 
         if month_record.last_sync_date:
-            start_date = month_record.last_sync_date.strftime('%Y-%m-%d')
+            start_date = (month_record.last_sync_date - timedelta(days=1)).strftime('%Y-%m-%d')
         else:
             start_date = month_record.date.strftime('%Y-%m-%d')
 
