@@ -13,7 +13,7 @@ class MonthAdmin(admin.ModelAdmin):
 
 @admin.register(models.Athlete)
 class AthleteAdmin(admin.ModelAdmin):
-    list_display = ['slug', 'name']
+    list_display = ['slug', 'name', 'strava_connection_status']
     inlines = [AthleteMonthSummaryInline]
 
 
