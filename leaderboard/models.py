@@ -14,6 +14,10 @@ class Athlete(models.Model):
     strava_id = models.PositiveIntegerField(blank=True, null=True)
     strava_access_token = models.CharField(max_length=255, blank=True, null=True)
     strava_refresh_token = models.CharField(max_length=255, blank=True, null=True)
+    strava_connection_status = models.CharField(choices=[
+        ('Connected', 'Connected'),
+        ('Disconnected', 'Disconnected'),
+    ], default='Connected')
 
     def __str__(self):
         return self.name

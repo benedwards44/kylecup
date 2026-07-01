@@ -92,7 +92,7 @@ class StravaClient():
         end_date = (date(month_record.date.year, month_record.date.month, num_days_in_month[1]) + timedelta(days=1)).strftime('%Y-%m-%d')
 
         # Refresh activities for each ath,ete
-        for athlete in Athlete.objects.filter(strava_access_token__isnull=False):
+        for athlete in Athlete.objects.filter(strava_access_token__isnull=False, status='Connected'):
             self.refresh_token(athlete)
             self.client = Client(access_token=athlete.strava_access_token, refresh_token=athlete.strava_refresh_token)
             athlete_month_summary = None
@@ -107,19 +107,23 @@ class StravaClient():
 
             existing_activities = Activity.objects.filter(athlete_month_summary__athlete=athlete).values_list("strava_id", flat=True)
             
-            for activity in self.client.get_activities(after=start_date, before=end_date):
-                # Only save run
-                if activity.type == 'Run' and activity.id not in existing_activities:
-                    # Create the new activity
-                    new_activity = Activity()
-                    new_activity.strava_id = activity.id 
-                    new_activity.date = activity.start_date
-                    new_activity.distance = activity.distance / 1000
-                    new_activity.pace = activity.average_speed
-                    new_activity.athlete_month_summary = athlete_month_summary
-                    new_activity.type = activity.type
-                    new_activity.save()
-                    notify_new_activity(new_activity)
+            try:
+                for activity in self.client.get_activities(after=start_date, before=end_date):
+                    # Only save run
+                    if activity.type == 'Run' and activity.id not in existing_activities:
+                        # Create the new activity
+                        new_activity = Activity()
+                        new_activity.strava_id = activity.id 
+                        new_activity.date = activity.start_date
+                        new_activity.distance = activity.distance / 1000
+                        new_activity.pace = activity.average_speed
+                        new_activity.athlete_month_summary = athlete_month_summary
+                        new_activity.type = activity.type
+                        new_activity.save()
+                        notify_new_activity(new_activity)
+            except:
+                athlete.strava_connection_status = 'Disconnected'
+                athlete.save()
         
         # Update last sync date
         month_record.last_sync_date = timezone.now()
