@@ -91,6 +91,11 @@ class StravaWebhookView(View):
             return JsonResponse({
                 'message': 'No hub.challenge parameter found in query parameters',
             }, status=400)
+        
+    def post(self, request, *args, **kwargs):
+        return JsonResponse({
+            'message': 'Thanks',
+        }, status=200)
 
 
 class PrivacyView(View):
