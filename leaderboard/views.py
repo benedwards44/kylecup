@@ -6,9 +6,9 @@ from leaderboard.mailer import send_email
 from leaderboard.notifications import send_push_notification
 from leaderboard.models import DeviceRegistration
 from . import models
-from datetime import timedelta
 from django.utils import timezone
 from leaderboard.strava import StravaClient
+from django.http import JsonResponse
 
 
 class IndexView(View):
@@ -61,7 +61,6 @@ class StravaCallbackView(View):
         client = StravaClient()
         client.auth_callback(request.GET.get('code'))
         return redirect('index')
-    
 
 class StravaSyncView(View):
     """
@@ -75,6 +74,23 @@ class StravaSyncView(View):
         client = StravaClient()
         client.sync_activities(self.kwargs['month'])
         return redirect('month', slug=self.kwargs['month'])
+
+
+class StravaWebhookView(View):
+    """
+    Handle webhook from Strava for activities
+    """
+    
+    def get(self, request, *args, **kwargs):
+        challenge = request.GET.get('hub.challenge') 
+        if challenge:
+            return JsonResponse({
+                'hub.challenge': challenge,
+            }, status=200)
+        else:
+            return JsonResponse({
+                'message': 'No hub.challenge parameter found in query parameters',
+            }, status=400)
 
 
 class PrivacyView(View):
