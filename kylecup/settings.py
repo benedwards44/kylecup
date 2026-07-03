@@ -189,6 +189,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STRAVA_CLIENT_ID = env('STRAVA_CLIENT_ID')
 STRAVA_CLIENT_SECRET = env('STRAVA_CLIENT_SECRET')
+STRAVA_WEBHOOK_TOKEN = 'fxYhCzMwF0uWPegvXiB8'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST')

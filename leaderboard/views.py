@@ -9,6 +9,9 @@ from . import models
 from django.utils import timezone
 from leaderboard.strava import StravaClient
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+import json
 
 
 class IndexView(View):
@@ -75,7 +78,7 @@ class StravaSyncView(View):
         client.sync_activities(self.kwargs['month'])
         return redirect('month', slug=self.kwargs['month'])
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class StravaWebhookView(View):
     """
     Handle webhook from Strava for activities
@@ -93,6 +96,8 @@ class StravaWebhookView(View):
             }, status=400)
         
     def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        models.Log.objects.create(payload=json.dumps(data, indent=4))
         return JsonResponse({
             'message': 'Thanks',
         }, status=200)
