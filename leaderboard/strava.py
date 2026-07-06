@@ -122,8 +122,9 @@ class StravaClient():
                         new_activity.save()
                         notify_new_activity(new_activity)
             except:
-                athlete.strava_connection_status = 'Disconnected'
-                athlete.save()
+                #athlete.strava_connection_status = 'Disconnected'
+                #athlete.save()
+                pass
         
         # Update last sync date
         month_record.last_sync_date = timezone.now()
