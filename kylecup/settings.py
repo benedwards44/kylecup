@@ -21,7 +21,6 @@ env = environ.Env(
     DEBUG=(bool, False),
     STRAVA_CLIENT_ID=(int, None),
     STRAVA_CLIENT_SECRET=(str, ''),
-    REDIS_URL=(str, 'redis://localhost:6379/0'),
     MAILGUN_API_KEY=(str, ''),
     MAILGUN_DOMAIN=(str, 'mg.edwards.nz'),
     DEFAULT_FROM_EMAIL=(str, 'kylecup@mg.edwards.nz'),
@@ -64,7 +63,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_celery_beat',
     'corsheaders',
     'leaderboard',
 ]
@@ -191,9 +189,3 @@ EMAIL_BACKEND = 'leaderboard.email_backend.MailgunEmailBackend'
 DEFAULT_FROM_EMAIL = 'kylecup@mg.edwards.nz'
 MAILGUN_API_KEY = env('MAILGUN_API_KEY')
 MAILGUN_DOMAIN = env('MAILGUN_DOMAIN')
-
-# CELERY CONFIG
-REDIS_URL = env('REDIS_URL')
-CELERY_BROKER_URL = REDIS_URL
-BROKER_POOL_LIMIT = 1
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
