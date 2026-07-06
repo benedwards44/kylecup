@@ -795,6 +795,7 @@ class StravaWebhookViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         mock_client.return_value.process_webhook_event.assert_called_once_with(19196504020, 53318588)
+        self.assertEqual(len(mail.outbox), 0)
 
     @mock.patch('leaderboard.views.StravaClient')
     def test_other_events_are_ignored(self, mock_client):
@@ -810,6 +811,27 @@ class StravaWebhookViewTests(TestCase):
 
     @mock.patch('leaderboard.views.StravaClient')
     def test_processing_errors_still_return_200(self, mock_client):
+        mock_client.return_value.process_webhook_event.side_effect = Exception('boom')
+
+        response = self.post_webhook(self.webhook_payload())
+
+        self.assertEqual(response.status_code, 200)
+
+    @mock.patch('leaderboard.views.StravaClient')
+    def test_processing_errors_email_admins(self, mock_client):
+        mock_client.return_value.process_webhook_event.side_effect = Exception('boom')
+
+        self.post_webhook(self.webhook_payload())
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Kyle Cup: Strava webhook processing failed')
+        self.assertEqual(mail.outbox[0].to, ['ben@edwards.nz'])
+        self.assertIn('19196504020', mail.outbox[0].body)
+        self.assertIn('boom', mail.outbox[0].body)
+
+    @mock.patch('leaderboard.views.send_email', side_effect=Exception('mail down'))
+    @mock.patch('leaderboard.views.StravaClient')
+    def test_still_returns_200_when_failure_email_fails(self, mock_client, mock_send):
         mock_client.return_value.process_webhook_event.side_effect = Exception('boom')
 
         response = self.post_webhook(self.webhook_payload())

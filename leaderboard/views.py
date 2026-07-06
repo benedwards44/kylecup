@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
+import traceback
 
 
 class IndexView(View):
@@ -94,7 +95,16 @@ class StravaWebhookView(View):
                 client.process_webhook_event(data.get('object_id'), data.get('owner_id'))
             except Exception:
                 # Always return a 200 so Strava doesn't keep retrying
-                pass
+                try:
+                    send_email(
+                        subject='Kyle Cup: Strava webhook processing failed',
+                        message='Failed to process webhook:\n\n%s\n\n%s' % (
+                            json.dumps(data, indent=4),
+                            traceback.format_exc(),
+                        ),
+                    )
+                except Exception:
+                    pass
 
         return JsonResponse({
             'message': 'Message processed.',
