@@ -44,8 +44,6 @@ def get_activities(request, month_slug):
     """
     Retrieve activities
     """
-    client = StravaClient()
-    client.sync_activities_if_stale(month_slug)
     return Activity.objects.filter(
         invalid=False, 
         athlete_month_summary__month__slug=month_slug

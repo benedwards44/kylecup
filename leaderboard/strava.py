@@ -129,9 +129,61 @@ class StravaClient():
         # Update last sync date
         month_record.last_sync_date = timezone.now()
         month_record.save()
-        
+
         # Sort and save the leaderboard
         sort_leaderboard(month_slug)
+
+
+    def process_webhook_event(self, object_id, owner_id):
+        """
+        Process a webhook event for a newly created activity
+        """
+
+        # The webhook owner_id is the athlete's Strava id, and we need their
+        # token to fetch the activity
+        try:
+            athlete = Athlete.objects.get(strava_id=owner_id, strava_connection_status='Connected')
+        except Athlete.DoesNotExist:
+            return
+
+        self.refresh_token(athlete)
+        self.client = Client(access_token=athlete.strava_access_token, refresh_token=athlete.strava_refresh_token)
+
+        activity = self.client.get_activity(object_id)
+
+        # Only save runs
+        if activity.type != 'Run':
+            return
+
+        # Skip if already created via a sync
+        if Activity.objects.filter(strava_id=activity.id).exists():
+            return
+
+        # Find the month the activity belongs to
+        activity_date = timezone.localtime(activity.start_date)
+        try:
+            month_record = Month.objects.get(date__year=activity_date.year, date__month=activity_date.month)
+        except Month.DoesNotExist:
+            return
+
+        athlete_month_summary, _ = AthleteMonthSummary.objects.get_or_create(
+            athlete=athlete,
+            month=month_record
+        )
+
+        # Create the new activity
+        new_activity = Activity()
+        new_activity.strava_id = activity.id
+        new_activity.date = activity.start_date
+        new_activity.distance = activity.distance / 1000
+        new_activity.pace = activity.average_speed
+        new_activity.athlete_month_summary = athlete_month_summary
+        new_activity.type = activity.type
+        new_activity.save()
+        notify_new_activity(new_activity)
+
+        # Sort and save the leaderboard
+        sort_leaderboard(month_record.slug)
 
 
 

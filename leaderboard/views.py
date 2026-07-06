@@ -32,20 +32,10 @@ class MonthView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #self.resync_strava()
         context["months"] = models.Month.objects.all()
         context["activities"] = models.Activity.objects.filter(invalid=False, athlete_month_summary__month=self.get_object())
         context["athletes"] = models.AthleteMonthSummary.objects.filter(month=self.get_object())
         return context
-            
-    def resync_strava(self):
-        """
-        If data is stale (eg. over an hour), resync
-        """
-        client = StravaClient()
-        client.sync_activities_if_stale(self.get_object().slug)
-
-
 
 class StravaConnectView(View):
     """
@@ -97,9 +87,17 @@ class StravaWebhookView(View):
         
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-        models.Log.objects.create(payload=json.dumps(data, indent=4))
+
+        if data.get('aspect_type') == 'create' and data.get('object_type') == 'activity':
+            try:
+                client = StravaClient()
+                client.process_webhook_event(data.get('object_id'), data.get('owner_id'))
+            except Exception:
+                # Always return a 200 so Strava doesn't keep retrying
+                pass
+
         return JsonResponse({
-            'message': 'Thanks',
+            'message': 'Message processed.',
         }, status=200)
 
 

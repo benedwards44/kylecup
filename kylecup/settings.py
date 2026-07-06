@@ -21,13 +21,9 @@ env = environ.Env(
     DEBUG=(bool, False),
     STRAVA_CLIENT_ID=(int, None),
     STRAVA_CLIENT_SECRET=(str, ''),
-    EMAIL_HOST=(str, 'localhost'),
-    EMAIL_PORT=(int, 587),
-    EMAIL_HOST_USER=(str, ''),
-    EMAIL_HOST_PASSWORD=(str, ''),
-    EMAIL_USE_TLS=(bool, True),
     REDIS_URL=(str, 'redis://localhost:6379/0'),
     MAILGUN_API_KEY=(str, ''),
+    MAILGUN_DOMAIN=(str, 'mg.edwards.nz'),
     DEFAULT_FROM_EMAIL=(str, 'kylecup@mg.edwards.nz'),
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
@@ -191,14 +187,10 @@ STRAVA_CLIENT_ID = env('STRAVA_CLIENT_ID')
 STRAVA_CLIENT_SECRET = env('STRAVA_CLIENT_SECRET')
 STRAVA_WEBHOOK_TOKEN = 'fxYhCzMwF0uWPegvXiB8'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_PORT = 587
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'leaderboard.email_backend.MailgunEmailBackend'
 DEFAULT_FROM_EMAIL = 'kylecup@mg.edwards.nz'
 MAILGUN_API_KEY = env('MAILGUN_API_KEY')
+MAILGUN_DOMAIN = env('MAILGUN_DOMAIN')
 
 # CELERY CONFIG
 REDIS_URL = env('REDIS_URL')

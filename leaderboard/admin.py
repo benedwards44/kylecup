@@ -25,8 +25,3 @@ class ActivityAdmin(admin.ModelAdmin):
 @admin.register(models.DeviceRegistration)
 class DeviceRegistrationAdmin(admin.ModelAdmin):
     list_display = ['token', 'created_at']
-
-
-@admin.register(models.Log)
-class LogAdmin(admin.ModelAdmin):
-    list_display = ['id','payload']
