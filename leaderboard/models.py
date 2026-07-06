@@ -139,7 +139,9 @@ class Activity(models.Model):
         return date_converted.strftime('%-d') + self.suffix(date_converted.day) + date_converted.strftime(' %b @ %-I:%M %p')
     
     def suffix(self, day):
-        return {1:'st',2:'nd',3:'rd'}.get(day%20, 'th')
+        if day in (11, 12, 13):
+            return 'th'
+        return {1:'st',2:'nd',3:'rd'}.get(day%10, 'th')
 
 
 class DeviceRegistration(models.Model):
