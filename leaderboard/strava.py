@@ -144,9 +144,9 @@ class StravaClient():
         try:
             athlete = Athlete.objects.get(strava_id=owner_id, strava_connection_status='Connected')
         except Athlete.DoesNotExist:
-            return
+            raise Exception('Could not find connected athlete for owner_id ' + owner_id)
 
-        self.refresh_token(athlete)
+        self.refresh_token(athlete) 
         self.client = Client(access_token=athlete.strava_access_token, refresh_token=athlete.strava_refresh_token)
 
         activity = self.client.get_activity(object_id)
