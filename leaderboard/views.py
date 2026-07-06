@@ -87,7 +87,7 @@ class StravaWebhookView(View):
         
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-
+        models.Log.objects.create(data=json.dumps(data, indent=4))
         if data.get('aspect_type') == 'create' and data.get('object_type') == 'activity':
             try:
                 client = StravaClient()

@@ -150,3 +150,10 @@ class DeviceRegistration(models.Model):
 
     def __str__(self):
         return self.token[:20] + '...'
+
+
+class Log(models.Model):
+    """
+    Log the Strava webhooks
+    """
+    data = models.TextField()
