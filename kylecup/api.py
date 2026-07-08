@@ -64,7 +64,7 @@ def get_leaderboard_full(request):
     """
     Retrieve leaderboard
     """
-    return AthleteMonthSummary.objects.all().order_by('month__date')
+    return AthleteMonthSummary.objects.filter(points__isnull=False).order_by('month__date')
 
 
 @api.post("/{month_slug}/sync")
