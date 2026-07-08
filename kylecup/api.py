@@ -59,6 +59,14 @@ def get_leaderboard(request, month_slug):
     return AthleteMonthSummary.objects.filter(month__slug=month_slug)
 
 
+@api.get("/leaderboard", response=List[AthleteMonthSummarySchema])
+def get_leaderboard_full(request):
+    """
+    Retrieve leaderboard
+    """
+    return AthleteMonthSummary.objects.all().order_by('month__date')
+
+
 @api.post("/{month_slug}/sync")
 def sync_activities(request, month_slug):
     """
