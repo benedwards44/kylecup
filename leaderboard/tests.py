@@ -26,7 +26,7 @@ from leaderboard.notifications import (
     send_push_notification,
 )
 from leaderboard.strava import StravaClient
-from leaderboard.utils import sort_leaderboard
+from leaderboard.utils import award_points, month_has_finished, sort_leaderboard
 
 # The whitenoise manifest storage requires collectstatic to have run, so use
 # the plain storage when rendering templates in tests
@@ -243,6 +243,66 @@ class SortLeaderboardTests(TestCase):
         changes = mock_notify.call_args.args[0]
         self.assertIn(('Ben', 2, 1), changes)
         self.assertIn(('Kyle', 1, 2), changes)
+
+
+# Freeze "today" so month finished checks are deterministic
+@mock.patch('leaderboard.utils.timezone.localdate', return_value=date(2026, 7, 8))
+class AwardPointsTests(TestCase):
+
+    def setUp(self):
+        self.june = create_month(name='June', slug='jun', month_date=date(2026, 6, 1))
+        self.athletes = [
+            create_athlete(name='Athlete %s' % i, slug='athlete-%s' % i, strava_id=i)
+            for i in range(1, 8)
+        ]
+
+    def create_summaries(self, month):
+        return [
+            AthleteMonthSummary.objects.create(month=month, athlete=athlete, current_position=i + 1)
+            for i, athlete in enumerate(self.athletes)
+        ]
+
+    def test_month_has_finished(self, mock_today):
+        self.assertTrue(month_has_finished(self.june))
+        self.assertFalse(month_has_finished(create_month(month_date=date(2026, 7, 1))))
+        self.assertFalse(month_has_finished(create_month(name='August', slug='aug', month_date=date(2026, 8, 1))))
+
+    def test_awards_points_by_final_position(self, mock_today):
+        summaries = self.create_summaries(self.june)
+
+        award_points()
+
+        expected = [15, 10, 7, 5, 4, 3, 0]
+        for summary, points in zip(summaries, expected):
+            summary.refresh_from_db()
+            self.assertEqual(summary.points, points)
+
+    def test_skips_unfinished_months(self, mock_today):
+        month = create_month(month_date=date(2026, 7, 1))
+        summaries = self.create_summaries(month)
+
+        award_points()
+
+        summaries[0].refresh_from_db()
+        self.assertIsNone(summaries[0].points)
+
+    def test_does_not_overwrite_awarded_points(self, mock_today):
+        summary = AthleteMonthSummary.objects.create(
+            month=self.june, athlete=self.athletes[0], current_position=1, points=10,
+        )
+
+        award_points()
+
+        summary.refresh_from_db()
+        self.assertEqual(summary.points, 10)
+
+    def test_unplaced_athlete_gets_zero_points(self, mock_today):
+        summary = AthleteMonthSummary.objects.create(month=self.june, athlete=self.athletes[0])
+
+        award_points()
+
+        summary.refresh_from_db()
+        self.assertEqual(summary.points, 0)
 
 
 class SendPushNotificationTests(TestCase):
@@ -472,20 +532,22 @@ class ProcessWebhookEventTests(TestCase):
 
         self.assertEqual(Activity.objects.count(), 0)
 
-    def test_skips_unknown_athlete(self, mock_client, mock_notify, mock_sort):
+    def test_raises_for_unknown_athlete(self, mock_client, mock_notify, mock_sort):
         client = self.strava_client(mock_client, fake_strava_activity())
 
-        client.process_webhook_event(555, 99999)
+        with self.assertRaisesMessage(Exception, 'Could not find connected athlete for owner_id 99999'):
+            client.process_webhook_event(555, 99999)
 
         self.assertEqual(Activity.objects.count(), 0)
         mock_client.return_value.get_activity.assert_not_called()
 
-    def test_skips_disconnected_athlete(self, mock_client, mock_notify, mock_sort):
+    def test_raises_for_disconnected_athlete(self, mock_client, mock_notify, mock_sort):
         self.athlete.strava_connection_status = 'Disconnected'
         self.athlete.save()
         client = self.strava_client(mock_client, fake_strava_activity())
 
-        client.process_webhook_event(555, 53318588)
+        with self.assertRaisesMessage(Exception, 'Could not find connected athlete for owner_id 53318588'):
+            client.process_webhook_event(555, 53318588)
 
         self.assertEqual(Activity.objects.count(), 0)
 
@@ -658,6 +720,57 @@ class MonthViewTests(TestCase):
     def test_unknown_month_returns_404(self):
         response = self.client.get(reverse('month', kwargs={'slug': 'nope'}))
         self.assertEqual(response.status_code, 404)
+
+
+@override_settings(STORAGES=TEST_STORAGES)
+@mock.patch('leaderboard.utils.timezone.localdate', return_value=date(2026, 7, 8))
+class LeaderboardViewTests(TestCase):
+
+    def setUp(self):
+        self.may = create_month(name='May', slug='may', month_date=date(2026, 5, 1))
+        self.june = create_month(name='June', slug='jun', month_date=date(2026, 6, 1))
+        self.july = create_month(name='July', slug='jul', month_date=date(2026, 7, 1))
+        self.kyle = create_athlete(name='Kyle', slug='kyle', strava_id=1)
+        self.ben = create_athlete(name='Ben', slug='ben', strava_id=2)
+
+    def test_awards_points_and_totals_for_finished_months(self, mock_today):
+        AthleteMonthSummary.objects.create(month=self.may, athlete=self.kyle, current_position=1)
+        AthleteMonthSummary.objects.create(month=self.may, athlete=self.ben, current_position=2)
+        AthleteMonthSummary.objects.create(month=self.june, athlete=self.kyle, current_position=2)
+        AthleteMonthSummary.objects.create(month=self.june, athlete=self.ben, current_position=1)
+        # The current month shouldn't be scored
+        AthleteMonthSummary.objects.create(month=self.july, athlete=self.ben, current_position=1)
+
+        response = self.client.get(reverse('leaderboard'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['scored_months'], [self.may, self.june])
+
+        rows = response.context['rows']
+        self.assertEqual([row['athlete'] for row in rows], [self.kyle, self.ben])
+        self.assertEqual(rows[0]['monthly'], [15, 10])
+        self.assertEqual(rows[0]['total'], 25)
+        self.assertEqual(rows[1]['monthly'], [10, 15])
+        self.assertEqual(rows[1]['total'], 25)
+
+    def test_athlete_without_summary_shows_no_points(self, mock_today):
+        AthleteMonthSummary.objects.create(month=self.may, athlete=self.kyle, current_position=1)
+
+        response = self.client.get(reverse('leaderboard'))
+
+        rows = response.context['rows']
+        ben_row = next(row for row in rows if row['athlete'] == self.ben)
+        self.assertEqual(ben_row['monthly'], [None, None])
+        self.assertEqual(ben_row['total'], 0)
+
+    def test_renders_without_finished_months(self, mock_today):
+        self.may.delete()
+        self.june.delete()
+
+        response = self.client.get(reverse('leaderboard'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['scored_months'], [])
 
 
 @override_settings(STORAGES=TEST_STORAGES)

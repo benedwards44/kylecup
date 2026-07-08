@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C /Users/benjedwards/Git/kylecup check-ignore .env)"
+      "Bash(git -C /Users/benjedwards/Git/kylecup check-ignore .env)",
+      "Bash(python3 -c \"import django; print\\(django.get_version\\(\\)\\)\")",
+      "Bash(python3 manage.py makemigrations leaderboard)",
+      "Bash(python3 manage.py test leaderboard)",
+      "Bash(git stash *)",
+      "Bash(python3 manage.py test leaderboard.tests.ProcessWebhookEventTests)",
+      "Bash(python3 manage.py migrate leaderboard)",
+      "Bash(python3 manage.py runserver 8765 --noreload)",
+      "Bash(python3 manage.py shell -c ' *)"
     ]
   }
 }

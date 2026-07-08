@@ -41,6 +41,7 @@
                   {% for month in months %}
                   <a href="/month/{{ month.slug }}" class="rounded-md px-3 py-2 text-sm hover:bg-indigo-500/75 {% if object.slug == month.slug %}font-bold text-white{% else %}font-medium text-blue-100{% endif %}">{{ month.name }}</a>
                   {% endfor %}
+                  <a href="{% url 'leaderboard' %}" class="rounded-md px-3 py-2 text-sm hover:bg-indigo-500/75 {% if request.resolver_match.url_name == 'leaderboard' %}font-bold text-white{% else %}font-medium text-blue-100{% endif %}">Leaderboard</a>
                 </nav>
               </div>
             </div>
@@ -74,6 +75,7 @@
                       {% for month in months %}
                       <a href="/month/{{ month.slug }}" class="block rounded-md px-3 py-2 text-base hover:bg-gray-100 hover:text-gray-800 {% if object.slug == month.slug %}font-bold text-black{% else %}font-medium text-gray-900 {% endif %}">{{ month.name }}</a>
                       {% endfor %}
+                      <a href="{% url 'leaderboard' %}" class="block rounded-md px-3 py-2 text-base hover:bg-gray-100 hover:text-gray-800 {% if request.resolver_match.url_name == 'leaderboard' %}font-bold text-black{% else %}font-medium text-gray-900 {% endif %}">Leaderboard</a>
                     </div>
                   </div>
                 </div>

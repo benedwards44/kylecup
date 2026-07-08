@@ -52,6 +52,11 @@ class AthleteMonthSummary(models.Model):
     month = models.ForeignKey(Month, on_delete=models.CASCADE)
     athlete = models.ForeignKey(Athlete, on_delete=models.CASCADE)
     current_position = models.PositiveIntegerField(blank=True, null=True)
+    points = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        help_text='Points awarded for the final placing once the month has finished'
+    )
 
     class Meta:
         ordering = ['current_position', 'month__date']

@@ -8,6 +8,7 @@ from leaderboard.models import DeviceRegistration
 from . import models
 from django.utils import timezone
 from leaderboard.strava import StravaClient
+from leaderboard.utils import award_points, month_has_finished
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -37,6 +38,43 @@ class MonthView(DetailView):
         context["activities"] = models.Activity.objects.filter(invalid=False, athlete_month_summary__month=self.get_object())
         context["athletes"] = models.AthleteMonthSummary.objects.filter(month=self.get_object())
         return context
+
+class LeaderboardView(View):
+    """
+    The season leaderboard, showing points scored for each month's placing
+    """
+
+    def get(self, request):
+        # Score any finished months that haven't been scored yet
+        award_points()
+
+        months = models.Month.objects.all()
+        scored_months = [month for month in months if month_has_finished(month)]
+
+        summaries = {
+            (summary.athlete_id, summary.month_id): summary
+            for summary in models.AthleteMonthSummary.objects.filter(month__in=scored_months)
+        }
+
+        rows = []
+        for athlete in models.Athlete.objects.all():
+            monthly = []
+            for month in scored_months:
+                summary = summaries.get((athlete.id, month.id))
+                monthly.append(summary.points if summary else None)
+            rows.append({
+                'athlete': athlete,
+                'monthly': monthly,
+                'total': sum(points for points in monthly if points),
+            })
+        rows.sort(key=lambda row: row['total'], reverse=True)
+
+        return render(request, 'leaderboard.html', {
+            'months': months,
+            'scored_months': scored_months,
+            'rows': rows,
+        })
+
 
 class StravaConnectView(View):
     """

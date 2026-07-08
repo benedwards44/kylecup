@@ -181,6 +181,16 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Points awarded for each finishing position at the end of a month
+PLACING_POINTS = {
+    1: 15,
+    2: 10,
+    3: 7,
+    4: 5,
+    5: 4,
+    6: 3,
+}
+
 STRAVA_CLIENT_ID = env('STRAVA_CLIENT_ID')
 STRAVA_CLIENT_SECRET = env('STRAVA_CLIENT_SECRET')
 STRAVA_WEBHOOK_TOKEN = 'fxYhCzMwF0uWPegvXiB8'

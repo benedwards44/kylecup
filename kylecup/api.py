@@ -31,6 +31,7 @@ class AthleteMonthSummarySchema(ModelSchema):
         model = AthleteMonthSummary
         fields = [
             'id',
+            'points'
         ]
 
 class PushTokenSchema(Schema):

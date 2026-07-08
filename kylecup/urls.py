@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.IndexView.as_view(), name='index'),
     path('month/<slug:slug>', views.MonthView.as_view(), name='month'),
+    path('leaderboard/', views.LeaderboardView.as_view(), name='leaderboard'),
     path('privacy/', views.PrivacyView.as_view(), name='privacy'),
     path('support/', views.SupportView.as_view(), name='support'),
     path('notify/', views.NotifyView.as_view(), name='notify'),

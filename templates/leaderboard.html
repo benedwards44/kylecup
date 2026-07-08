@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block layout %}
+<section>
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="p-6">
+      <div class="border-b border-blue-900 pb-4">
+        <h1 class="text-3xl font-bold">Leaderboard</h1>
+      </div>
+      {% if not scored_months %}
+      <div class="mt-5">
+        {% include 'snippets/alert.html' with message='No months have finished yet. Points are awarded once a month is complete.' %}
+      </div>
+      {% else %}
+      <div class="mt-5 overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-300">
+          <thead>
+            <tr>
+              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900"></th>
+              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Athlete</th>
+              {% for month in scored_months %}
+              <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">{{ month.name }}</th>
+              {% endfor %}
+              <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Total</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            {% for row in rows %}
+            <tr {% if forloop.first %}class="bg-blue-50"{% endif %}>
+              <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500">{{ forloop.counter }}</td>
+              <td class="whitespace-nowrap px-3 py-4">
+                <div class="flex items-center space-x-3">
+                  <img src="{{ row.athlete.avatar }}" alt="{{ row.athlete.name }}" class="size-8 rounded-full bg-gray-300 outline outline-1 -outline-offset-1 outline-black/5" />
+                  <span class="text-sm font-medium text-gray-900">{{ row.athlete.name }}</span>
+                </div>
+              </td>
+              {% for points in row.monthly %}
+              <td class="whitespace-nowrap px-3 py-4 text-center text-sm text-gray-500">{{ points|default_if_none:'–' }}</td>
+              {% endfor %}
+              <td class="whitespace-nowrap px-3 py-4 text-center text-sm font-bold text-gray-900">{{ row.total }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
