@@ -18,7 +18,8 @@ class ActivitySchema(ModelSchema):
             'id',
             'date',
             'distance',
-            'pace'
+            'pace',
+            'strava_id',
         ]
 
 

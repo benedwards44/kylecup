@@ -25,7 +25,13 @@
     <li>
       <div class="relative pb-8">
         <span aria-hidden="true" class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200"></span>
-        <div class="relative flex space-x-3">
+        <a
+          href="https://www.strava.com/activities/{{ activity.strava_id }}"
+          target="_blank"
+          rel="noopener"
+          class="activity-link relative flex space-x-3 rounded-md hover:bg-gray-100"
+          data-strava-id="{{ activity.strava_id }}"
+        >
           <div>
             <img src="{{ activity.athlete_month_summary.athlete.avatar }}" alt="{{ activity.athlete_month_summary.athlete.name }}" class="size-8 rounded-full bg-gray-300 outline outline-1 -outline-offset-1 outline-black/5" />
           </div>
@@ -44,11 +50,28 @@
               <time datetime="{{ activity.date|date:"Y-m-d" }}">{{ activity.date_display }}</time>
             </div>
           </div>
-        </div>
+        </a>
       </div>
     </li>
     {% endfor %}
   </ul>
+  <script>
+    document.querySelectorAll('.activity-link').forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        var isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+        if (!isMobile) return;
+        event.preventDefault();
+        // Try the Strava app first; fall back to the website if it doesn't open.
+        var fallback = setTimeout(function () {
+          window.open(link.href, '_blank');
+        }, 1500);
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden) clearTimeout(fallback);
+        }, { once: true });
+        window.location.href = 'strava://activities/' + link.dataset.stravaId;
+      });
+    });
+  </script>
   {% endif %}
 </div>
 {% endblock %}

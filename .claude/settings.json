@@ -9,7 +9,8 @@
       "Bash(python3 manage.py test leaderboard.tests.ProcessWebhookEventTests)",
       "Bash(python3 manage.py migrate leaderboard)",
       "Bash(python3 manage.py runserver 8765 --noreload)",
-      "Bash(python3 manage.py shell -c ' *)"
+      "Bash(python3 manage.py shell -c ' *)",
+      "Bash(python3 -c ' *)"
     ]
   }
 }
