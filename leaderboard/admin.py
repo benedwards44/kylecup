@@ -28,4 +28,4 @@ class DeviceRegistrationAdmin(admin.ModelAdmin):
 
 @admin.register(models.Log)
 class LogAdmin(admin.ModelAdmin):
-    list_display = ['data']
+    list_display = ['created_date', 'data']

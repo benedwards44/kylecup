@@ -161,4 +161,5 @@ class Log(models.Model):
     """
     Log the Strava webhooks
     """
+    created_date = models.DateTimeField(auto_now_add=True)
     data = models.TextField()
