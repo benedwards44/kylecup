@@ -61,7 +61,9 @@ def fake_strava_activity(activity_id=555, activity_type='Run', start=None, dista
     activity = mock.Mock()
     activity.id = activity_id
     activity.type = activity_type
-    activity.start_date = start or timezone.now()
+    # The default start must stay inside create_month's default month, as the
+    # webhook path resolves the month from the activity date
+    activity.start_date = start or timezone.make_aware(datetime(2026, 7, 5, 8, 30))
     activity.distance = distance
     activity.average_speed = speed
     return activity
