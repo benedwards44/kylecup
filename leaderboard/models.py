@@ -157,9 +157,15 @@ class DeviceRegistration(models.Model):
         return self.token[:20] + '...'
 
 
-class Log(models.Model):
+class WebhookEvent(models.Model):
     """
     Log the Strava webhooks
     """
     created_date = models.DateTimeField(auto_now_add=True)
     data = models.TextField()
+    status = models.CharField(max_length=20, default='New', choices=[
+        ('New', 'New'),
+        ('Processed', 'Processed'),
+        ('Error', 'Error')
+    ])
+    error_message = models.TextField(blank=True, null=True)

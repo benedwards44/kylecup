@@ -126,12 +126,17 @@ class StravaWebhookView(View):
         
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-        models.Log.objects.create(data=json.dumps(data, indent=4))
+        log = models.WebhookEvent.objects.create(data=json.dumps(data, indent=4), status='New')
         if data.get('aspect_type') == 'create' and data.get('object_type') == 'activity':
             try:
                 client = StravaClient()
                 client.process_webhook_event(data.get('object_id'), data.get('owner_id'))
+                log.status = 'Processed'
+                log.save()
             except Exception:
+                log.status = 'Error'
+                log.error_message = traceback.format_exc()
+                log.save()
                 # Always return a 200 so Strava doesn't keep retrying
                 try:
                     send_email(

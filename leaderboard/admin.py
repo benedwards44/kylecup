@@ -26,6 +26,6 @@ class ActivityAdmin(admin.ModelAdmin):
 class DeviceRegistrationAdmin(admin.ModelAdmin):
     list_display = ['token', 'created_at']
 
-@admin.register(models.Log)
-class LogAdmin(admin.ModelAdmin):
-    list_display = ['created_date', 'data']
+@admin.register(models.WebhookEvent)
+class WebhookEventAdmin(admin.ModelAdmin):
+    list_display = ['created_date', 'data', 'status']
