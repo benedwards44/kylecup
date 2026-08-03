@@ -3,6 +3,7 @@ from ninja import ModelSchema
 from leaderboard.models import Activity, AthleteMonthSummary, DeviceRegistration
 from typing import List
 from leaderboard.strava import StravaClient
+from leaderboard.utils import award_points
 import decimal
 
 class ActivitySchema(ModelSchema):
@@ -65,6 +66,7 @@ def get_leaderboard_full(request):
     """
     Retrieve leaderboard
     """
+    award_points()
     return AthleteMonthSummary.objects.filter(points__isnull=False).order_by('month__date')
 
 
