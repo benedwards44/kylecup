@@ -57,6 +57,10 @@ class AthleteMonthSummary(models.Model):
         null=True,
         help_text='Points awarded for the final placing once the month has finished'
     )
+    disable_double_points = models.BooleanField(
+        default=False,
+        help_text='Used to manually disable double points for an athlete, mostly for pregnant people'
+    )
 
     class Meta:
         ordering = ['current_position', 'month__date']
@@ -105,12 +109,15 @@ class Activity(models.Model):
 
     def __str__(self):
         return self.display()
+
+    def is_double_points(self):
+        return self.athlete_month_summary.athlete.is_double_points and self.athlete_month_summary.month.is_double_points_month and not self.athlete_month_summary.disable_double_points
     
     def display(self):
         return '%s ran %skm%sat %s.' % (
             self.athlete_month_summary.athlete.name, 
             str(self.distance), 
-            (' (worth ' + str(self.distance_calculated()) + 'km) ')  if self.athlete_month_summary.athlete.is_double_points else ' ',
+            (' (worth ' + str(self.distance_calculated()) + 'km) ')  if self.is_double_points() else ' ',
             str(self.pace_display()),
         )
     
@@ -118,7 +125,7 @@ class Activity(models.Model):
         return self.athlete_month_summary.athlete.name
     
     def distance_calculated(self):
-        if self.athlete_month_summary.athlete.is_double_points and self.athlete_month_summary.month.is_double_points_month:
+        if self.is_double_points():
             return self.distance * 2
         return self.distance
     

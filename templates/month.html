@@ -40,7 +40,7 @@
               <p class="text-sm text-gray-500">
                 <span class="font-bold">{{ activity.athlete_month_summary.athlete.name }}</span> ran 
                 <span class="font-bold">{{ activity.distance }} km</span> 
-                {% if activity.athlete_month_summary.athlete.is_double_points and activity.athlete_month_summary.month.is_double_points_month %}
+                {% if activity.is_double_points %}
                 (worth <span class="font-bold">{{ activity.distance_calculated}} km</span>)
                 {% endif %}
                 at <span class="font-bold">{{ activity.pace_display }}.</span>
@@ -107,7 +107,7 @@
     <p class="text-sm font-medium text-gray-900">{{ athlete.athlete.name }}</p>
     <p class="truncate text-sm text-gray-500">
       {{ athlete.total_distance }}km
-      {% if athlete.athlete.is_double_points and athlete.month.is_double_points_month %}
+      {% if athlete.athlete.is_double_points and athlete.month.is_double_points_month and not athlete.disable_double_points %}
       <span class="text-xs">({{ athlete.total_distance_raw }}km)</span>
       {% endif %}
     </p>
